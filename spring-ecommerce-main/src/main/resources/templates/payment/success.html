@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, '¡Pedido Realizado con Éxito!')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido Exitoso</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Success Header -->
+        <div class="bg-gradient-success text-white py-5">
+            <div class="container">
+                <div class="row align-items-center justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <div class="mb-4">
+                            <i class="bi bi-check-circle-fill" style="font-size: 5rem;"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold mb-3">¡Pedido Realizado con Éxito!</h1>
+                        <p class="lead mb-0">Tu pedido ha sido procesado correctamente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Success Card -->
+                    <div class="card border-0 shadow-custom">
+                        <div class="card-body text-center p-5">
+                            <div class="mb-4">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                            </div>
+                            
+                            <h2 class="fw-bold text-success mb-3">¡Gracias por tu compra!</h2>
+                            <p class="lead text-muted mb-4">
+                                Tu pedido ha sido procesado exitosamente. Recibirás un email de confirmación en breve con todos los detalles.
+                            </p>
+
+                            <!-- Order Details -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 bg-light">
+                                        <h6 class="fw-bold text-primary mb-2">
+                                            <i class="bi bi-receipt"></i> Número de Pedido
+                                        </h6>
+                                        <p class="mb-0 fs-5 fw-bold" th:text="${param.orderId != null ? 'ORD-' + param.orderId[0] : 'ORD-' + #temporals.format(#temporals.createNow(), 'yyyyMMddHHmmss')}">ORD-123456</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 bg-light">
+                                        <h6 class="fw-bold text-primary mb-2">
+                                            <i class="bi bi-credit-card"></i> Método de Pago
+                                        </h6>
+                                        <p class="mb-0">
+                                            <span th:if="${param.method != null and param.method[0] == 'cash'}">
+                                                <i class="bi bi-cash text-success"></i> Pago Contra Entrega
+                                            </span>
+                                            <span th:if="${param.method != null and param.method[0] == 'paypal'}">
+                                                <i class="bi bi-paypal text-primary"></i> PayPal
+                                            </span>
+                                            <span th:if="${param.method != null and param.method[0] == 'transfer'}">
+                                                <i class="bi bi-bank text-info"></i> Transferencia Bancaria
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 bg-light">
+                                        <h6 class="fw-bold text-primary mb-2">
+                                            <i class="bi bi-clock"></i> Fecha
+                                        </h6>
+                                        <p class="mb-0" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Hoy</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 bg-light">
+                                        <h6 class="fw-bold text-primary mb-2">
+                                            <i class="bi bi-truck"></i> Estado
+                                        </h6>
+                                        <p class="mb-0">
+                                            <span class="badge bg-warning">Procesando</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Next Steps -->
+                            <div class="alert alert-info text-start">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-info-circle"></i> Próximos Pasos
+                                </h6>
+                                <ul class="mb-0">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-success"></i> 
+                                        Recibirás un email de confirmación con los detalles de tu pedido
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-success"></i> 
+                                        Procesaremos tu pedido en las próximas 24-48 horas
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-success"></i> 
+                                        Te notificaremos cuando tu pedido sea enviado
+                                    </li>
+                                    <li class="mb-2" th:if="${param.method != null and param.method[0] == 'cash'}">
+                                        <i class="bi bi-check text-success"></i> 
+                                        Prepara el dinero exacto para facilitar la entrega
+                                    </li>
+                                    <li class="mb-2" th:if="${param.method != null and param.method[0] == 'transfer'}">
+                                        <i class="bi bi-check text-warning"></i> 
+                                        Realiza la transferencia a la cuenta indicada en el email
+                                    </li>
+                                    <li class="mb-0">
+                                        <i class="bi bi-check text-success"></i> 
+                                        Tiempo estimado de entrega: 3-5 días hábiles
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Instrucciones de transferencia (si aplica) -->
+                            <div th:if="${param.method != null and param.method[0] == 'transfer'}" class="alert alert-warning text-start">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-bank"></i> Datos para Transferencia Bancaria
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Banco:</strong> Banco de Bogotá
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Tipo de cuenta:</strong> Ahorros
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Número de cuenta:</strong> 123-456789-10
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Titular:</strong> E-Commerce Pro SAS
+                                    </div>
+                                    <div class="col-md-12 mb-2">
+                                        <strong>NIT:</strong> 900.123.456-7
+                                    </div>
+                                </div>
+                                <hr>
+                                <p class="mb-0 small">
+                                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                                    <strong>Importante:</strong> Una vez realizada la transferencia, envía el comprobante 
+                                    al email: <strong>pagos@ecommerce-pro.com</strong> indicando tu número de pedido.
+                                </p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <a href="/orders" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-bag-check"></i> Ver Mis Pedidos
+                                </a>
+                                <a href="/products" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-shop"></i> Continuar Comprando
+                                </a>
+                                <button class="btn btn-outline-secondary btn-lg" onclick="window.print()">
+                                    <i class="bi bi-printer"></i> Imprimir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Benefits -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-header bg-gradient-secondary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-gift"></i> Beneficios de tu Compra
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success text-white rounded-circle p-3 me-3">
+                                            <i class="bi bi-arrow-return-left fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Devolución Gratis</h6>
+                                            <small class="text-muted">30 días para devoluciones</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded-circle p-3 me-3">
+                                            <i class="bi bi-shield-check fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Garantía de Calidad</h6>
+                                            <small class="text-muted">Productos 100% originales</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-info text-white rounded-circle p-3 me-3">
+                                            <i class="bi bi-headset fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Soporte 24/7</h6>
+                                            <small class="text-muted">Atención personalizada</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-warning text-dark rounded-circle p-3 me-3">
+                                            <i class="bi bi-truck fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Seguimiento en Tiempo Real</h6>
+                                            <small class="text-muted">Rastrea tu envío</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-question-circle"></i> ¿Necesitas Ayuda?
+                            </h6>
+                            <p class="text-muted mb-3">
+                                Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos.
+                            </p>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-envelope text-primary me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">Email</small>
+                                            <strong>soporte@ecommerce-pro.com</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-telephone text-primary me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">Teléfono</small>
+                                            <strong>+57 1 234 5678</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-whatsapp text-success me-2 fs-5"></i>
+                                        <div class="text-start">
+                                            <small class="text-muted d-block">WhatsApp</small>
+                                            <strong>+57 300 123 4567</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Share -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted mb-2">Comparte tu experiencia con nosotros:</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confetti Animation -->
+        <script>
+            // Opcional: Agregar animación de confeti
+            document.addEventListener('DOMContentLoaded', function() {
+                // Desplazar al inicio de la página
+                window.scrollTo(0, 0);
+                
+                // Auto-redirigir después de 60 segundos (opcional)
+                // setTimeout(() => {
+                //     window.location.href = '/orders';
+                // }, 60000);
+            });
+        </script>
+    </div>
+</body>
+</html>

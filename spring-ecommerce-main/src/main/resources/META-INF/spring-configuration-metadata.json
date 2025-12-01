@@ -1,0 +1,69 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Clave secreta para firmar JWT"
+    },
+    {
+      "name": "app.jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "Duración del token JWT en milisegundos"
+    },
+    {
+      "name": "app.paypal.client-id",
+      "type": "java.lang.String",
+      "description": "ID del cliente PayPal"
+    },
+    {
+      "name": "app.paypal.client-secret",
+      "type": "java.lang.String",
+      "description": "Clave secreta del cliente PayPal"
+    },
+    {
+      "name": "app.paypal.mode",
+      "type": "java.lang.String",
+      "description": "Modo de operación de PayPal (sandbox o live)"
+    },
+    {
+      "name": "app.paypal.base-url",
+      "type": "java.lang.String",
+      "description": "URL base de la API de PayPal"
+    },
+    {
+      "name": "app.paypal.business-email",
+      "type": "java.lang.String",
+      "description": "Correo electrónico de la cuenta de negocios PayPal"
+    },
+    {
+      "name": "app.admin.registration.token",
+      "type": "java.lang.String",
+      "description": "Token secreto para registrar administradores"
+    },
+    {
+      "name": "app.seed.create-sample-data",
+      "type": "java.lang.Boolean",
+      "description": "Indica si se deben crear datos de ejemplo al iniciar"
+    },
+    {
+      "name": "app.seed.create-default-admin",
+      "type": "java.lang.Boolean",
+      "description": "Indica si se debe crear un administrador por defecto"
+    },
+    {
+      "name": "app.name",
+      "type": "java.lang.String",
+      "description": "Nombre de la aplicación"
+    },
+    {
+      "name": "app.url",
+      "type": "java.lang.String",
+      "description": "URL base de la aplicación"
+    },
+    {
+      "name": "app.upload-dir",
+      "type": "java.lang.String",
+      "description": "Directorio para subir imágenes de productos"
+    }
+  ]
+}

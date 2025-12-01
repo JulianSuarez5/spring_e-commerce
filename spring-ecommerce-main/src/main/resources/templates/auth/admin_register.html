@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Admin - E-Commerce Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        .admin-register-card { 
+            max-width: 550px; 
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin: 2rem auto;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 2rem;
+            text-align: center;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        .card-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        .admin-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 0.65rem 0.75rem;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+        .alert {
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-left-color: #17a2b8;
+            color: #0c5460;
+        }
+        .token-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .token-info i {
+            color: #ffc107;
+            font-size: 1.25rem;
+        }
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+        .strength-weak { background: #dc3545; width: 33%; }
+        .strength-medium { background: #ffc107; width: 66%; }
+        .strength-strong { background: #28a745; width: 100%; }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        .is-valid {
+            border-color: #28a745;
+        }
+        .invalid-feedback {
+            display: none;
+            font-size: 0.875rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+        }
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+        .btn-outline-warning:hover {
+            background: #ffc107;
+            color: #000;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="admin-register-card">
+            <!-- Header Estilo Admin -->
+            <div class="card-header">
+                <div class="mb-2">
+                    <i class="bi bi-shield-lock" style="font-size: 3rem;"></i>
+                </div>
+                <h2>Registro de Administrador</h2>
+                <p>Crea una cuenta con privilegios administrativos</p>
+                <span class="admin-badge">
+                    <i class="bi bi-star-fill"></i> ADMIN REGISTRATION
+                </span>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body p-4">
+                
+                <!-- Mensajes de error -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Error:</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Información sobre token si ya existe un admin -->
+                <div th:if="${adminExists}" class="token-info">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-info-circle-fill me-3"></i>
+                        <div>
+                            <strong>Se requiere código secreto</strong>
+                            <p class="mb-0 small mt-1">Ya existe un administrador en el sistema. Para crear cuentas adicionales, necesitas el código secreto configurado en <code>application.properties</code></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="@{/admin/register}" method="post" id="adminRegisterForm" novalidate>
+                    
+                    <!-- Row para campos en 2 columnas en pantallas grandes -->
+                    <div class="row">
+                        <!-- Nombre completo -->
+                        <div class="col-md-12 mb-3">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-person-fill text-danger"></i> Nombre Completo
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="name" 
+                                   name="name" 
+                                   placeholder="Ej: Juan Pérez García"
+                                   required 
+                                   minlength="3"
+                                   maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa un nombre válido (mínimo 3 caracteres).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Usuario -->
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">
+                                <i class="bi bi-person-badge text-danger"></i> Usuario
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="admin_juan"
+                                   required 
+                                   minlength="4"
+                                   maxlength="50"
+                                   pattern="[a-zA-Z0-9_]+"
+                                   title="Solo letras, números y guión bajo">
+                            <div class="invalid-feedback">
+                                4-50 caracteres (letras, números y _).
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope-fill text-danger"></i> Email
+                            </label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   placeholder="admin@empresa.com"
+                                   required
+                                   maxlength="100">
+                            <div class="invalid-feedback">
+                                Ingresa un email válido.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Teléfono -->
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="bi bi-telephone-fill text-danger"></i> Teléfono
+                            </label>
+                            <input type="tel" 
+                                   class="form-control" 
+                                   id="phone" 
+                                   name="phone" 
+                                   placeholder="+57 300 123 4567"
+                                   required
+                                   minlength="7"
+                                   maxlength="20">
+                            <div class="invalid-feedback">
+                                Ingresa un teléfono válido.
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="col-md-6 mb-3">
+                            <label for="address" class="form-label">
+                                <i class="bi bi-geo-alt-fill text-danger"></i> Dirección
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="address" 
+                                   name="address" 
+                                   placeholder="Calle 123 #45-67"
+                                   required
+                                   minlength="10"
+                                   maxlength="200">
+                            <div class="invalid-feedback">
+                                Mínimo 10 caracteres.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Contraseña -->
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock-fill text-danger"></i> Contraseña
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Mínimo 8 caracteres"
+                                   required
+                                   minlength="8"
+                                   maxlength="100">
+                            <div class="password-strength" id="passwordStrength"></div>
+                            <div class="invalid-feedback">
+                                Mínimo 8 caracteres.
+                            </div>
+                        </div>
+
+                        <!-- Confirmar Contraseña -->
+                        <div class="col-md-6 mb-3">
+                            <label for="confirmPassword" class="form-label">
+                                <i class="bi bi-lock-fill text-danger"></i> Confirmar
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="confirmPassword" 
+                                   name="confirmPassword" 
+                                   placeholder="Repite la contraseña"
+                                   required
+                                   minlength="8"
+                                   maxlength="100">
+                            <div class="invalid-feedback" id="confirmPasswordFeedback">
+                                Las contraseñas no coinciden.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token (solo si adminExists = true) -->
+                    <div th:if="${adminExists}" class="mb-3">
+                        <label for="token" class="form-label">
+                            <i class="bi bi-key-fill text-warning"></i> Código Secreto de Administrador
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="token" 
+                               name="token" 
+                               placeholder="Ingresa el código secreto"
+                               th:required="${adminExists}"
+                               minlength="6"
+                               maxlength="100">
+                        <div class="invalid-feedback">
+                            El código secreto es obligatorio.
+                        </div>
+                        <small class="form-text text-muted">
+                            <i class="bi bi-shield-check"></i> Token configurado en <code>app.admin.registration.token</code>
+                        </small>
+                    </div>
+
+                    <!-- Campo oculto para el rol -->
+                    <input type="hidden" name="role" value="ADMIN" />
+
+                    <!-- Nota de seguridad -->
+                    <div class="alert alert-info small mb-3" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Nota de seguridad:</strong> Las cuentas de administrador tienen acceso total al sistema. 
+                        Todos los registros son auditados.
+                    </div>
+
+                    <!-- Botón de registro -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-shield-check"></i> Crear Cuenta de Administrador
+                        </button>
+                    </div>
+                </form>
+
+                <hr>
+
+                <!-- Links de navegación -->
+                <div class="text-center">
+                    <p class="mb-2 small text-muted">¿Ya tienes una cuenta de administrador?</p>
+                    <a href="/admin/login" class="btn btn-outline-warning btn-sm me-2">
+                        <i class="bi bi-shield-lock"></i> Login Admin
+                    </a>
+                    <a href="/login" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Login Cliente
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validación personalizada del formulario
+        (function() {
+            'use strict';
+
+            const form = document.getElementById('adminRegisterForm');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordStrength = document.getElementById('passwordStrength');
+            const confirmFeedback = document.getElementById('confirmPasswordFeedback');
+
+            // Validar coincidencia de contraseñas en tiempo real
+            function validatePasswordMatch() {
+                if (confirmPassword.value === '') {
+                    confirmPassword.setCustomValidity('');
+                    confirmFeedback.textContent = 'Las contraseñas no coinciden.';
+                    return;
+                }
+
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                    confirmFeedback.textContent = 'Las contraseñas no coinciden.';
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmFeedback.textContent = '';
+                }
+            }
+
+            // Indicador de fortaleza de contraseña
+            password.addEventListener('input', function() {
+                const val = this.value;
+                let strength = 0;
+
+                if (val.length >= 8) strength++;
+                if (val.match(/[a-z]/) && val.match(/[A-Z]/)) strength++;
+                if (val.match(/\d/)) strength++;
+                if (val.match(/[^a-zA-Z\d]/)) strength++;
+
+                passwordStrength.className = 'password-strength';
+                if (strength === 0 || strength === 1) {
+                    passwordStrength.classList.add('strength-weak');
+                } else if (strength === 2 || strength === 3) {
+                    passwordStrength.classList.add('strength-medium');
+                } else {
+                    passwordStrength.classList.add('strength-strong');
+                }
+            });
+
+            confirmPassword.addEventListener('input', validatePasswordMatch);
+            password.addEventListener('input', validatePasswordMatch);
+
+            // Validación de Bootstrap al enviar
+            form.addEventListener('submit', function(event) {
+                validatePasswordMatch();
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+
+            // Validar en tiempo real al salir de cada campo
+            form.querySelectorAll('input, textarea, select').forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

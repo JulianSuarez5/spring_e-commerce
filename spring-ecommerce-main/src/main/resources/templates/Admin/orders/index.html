@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Pedidos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pedidos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Mensajes de éxito/error -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}">Operación exitosa</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <span th:text="${error}">Error en la operación</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 fw-bold">
+                    <i class="bi bi-cart-check text-info"></i> Gestión de Pedidos
+                </h1>
+                <p class="text-muted mb-0">Administra los pedidos de los clientes</p>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list"></i> Lista de Pedidos
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td>
+                                    <strong th:text="${order.number}">ORD-001</strong>
+                                </td>
+                                <td>
+                                    <!-- ✅ CORREGIDO: Muestra nombre del usuario o username si no tiene nombre -->
+                                    <span th:if="${order.user != null}">
+                                        <span th:text="${order.user.name != null and !order.user.name.isEmpty() ? order.user.name : order.user.username}">Cliente</span>
+                                    </span>
+                                    <span th:if="${order.user == null}" class="text-muted">Sin usuario</span>
+                                </td>
+                                <td class="text-muted" th:text="${#temporals.format(order.creationDate, 'dd/MM/yyyy HH:mm')}">
+                                    Fecha
+                                </td>
+                                <td class="fw-bold" th:text="${#numbers.formatCurrency(order.totalPrice)}">
+                                    $0
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill" 
+                                          th:classappend="
+                                            ${order.status == 'pending'} ? 'text-bg-warning' :
+                                            (${order.status == 'completed'} ? 'text-bg-success' :
+                                            (${order.status == 'shipped'} ? 'text-bg-info' :
+                                            (${order.status == 'cancelled'} ? 'text-bg-danger' : 'text-bg-secondary')))"
+                                          th:text="${order.status}">
+                                        Estado
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a th:href="@{/admin/orders/show/{id}(id=${order.id})}" 
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(orders)}">
+                                <td colspan="6" class="text-center py-5">
+                                    <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
+                                    <p class="text-muted">No hay pedidos registrados</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

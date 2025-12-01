@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Nuestros Productos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestros Productos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Encabezado de la Página con Gradiente Mejorado -->
+        <div class="page-header-gradient text-white py-5 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 fw-bold mb-3 animate-fade-in">
+                            <i class="bi bi-shop me-2"></i> Nuestros Productos
+                        </h1>
+                        <p class="lead mb-0 opacity-90">Descubre nuestra amplia gama de productos de alta calidad</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <span class="badge bg-white text-primary fs-5 px-4 py-2 shadow-sm" th:if="${products != null}">
+                            <i class="bi bi-box-seam me-2"></i>
+                            <span th:text="${#lists.size(products)}">0</span> productos
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-4">
+            <div class="row g-4">
+                
+                <!-- Sidebar de Filtros Mejorado -->
+                <div class="col-lg-3">
+                    <div class="filters-sticky">
+                        <form th:action="@{/products}" method="get">
+                            <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                                <div class="card-header bg-primary text-white py-3">
+                                    <h5 class="mb-0 fw-bold">
+                                        <i class="bi bi-funnel-fill me-2"></i> Filtros de Búsqueda
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    
+                                    <!-- Búsqueda por Texto -->
+                                    <div class="mb-4">
+                                        <label for="q" class="form-label fw-semibold mb-2">
+                                            <i class="bi bi-search me-1"></i> Buscar Producto
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control form-control-lg rounded-pill" 
+                                               id="q"
+                                               name="q"
+                                               placeholder="Ej: Samsung, TV, Laptop..."
+                                               th:value="${query}">
+                                    </div>
+                                    
+                                    <hr class="my-4">
+                                    
+                                    <!-- Filtro de Categorías -->
+                                    <div class="mb-4">
+                                        <label for="categoryId" class="form-label fw-semibold mb-2">
+                                            <i class="bi bi-grid-3x3-gap-fill me-1"></i> Categoría
+                                        </label>
+                                        <select name="categoryId" id="categoryId" class="form-select form-select-lg rounded-3">
+                                            <option value="">Todas las categorías</option>
+                                            <th:block th:each="category : ${categories}">
+                                                <option th:value="${category.id}" 
+                                                        th:text="${category.name}"
+                                                        th:selected="${selectedCategoryId != null && selectedCategoryId == category.id}">
+                                                    Categoría
+                                                </option>
+                                            </th:block>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Filtro de Marcas -->
+                                    <div class="mb-4" th:if="${brands != null && !#lists.isEmpty(brands)}">
+                                        <label for="brandId" class="form-label fw-semibold mb-2">
+                                            <i class="bi bi-award-fill me-1"></i> Marca
+                                        </label>
+                                        <select name="brandId" id="brandId" class="form-select form-select-lg rounded-3">
+                                            <option value="">Todas las marcas</option>
+                                            <th:block th:each="brand : ${brands}">
+                                                <option th:value="${brand.id}" 
+                                                        th:text="${brand.name}"
+                                                        th:selected="${selectedBrandId != null && selectedBrandId == brand.id}">
+                                                    Marca
+                                                </option>
+                                            </th:block>
+                                        </select>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Filtro de Precio Mejorado -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold mb-3">
+                                            <i class="bi bi-cash-stack me-1"></i> Rango de Precio
+                                        </label>
+                                        <div class="row g-3">
+                                            <div class="col-6">
+                                                <label for="minPrice" class="form-label text-muted small">Desde</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">$</span>
+                                                    <input type="number" 
+                                                           class="form-control" 
+                                                           id="minPrice"
+                                                           name="minPrice" 
+                                                           placeholder="0"
+                                                           th:value="${minPrice}"
+                                                           min="0">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="maxPrice" class="form-label text-muted small">Hasta</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light">$</span>
+                                                    <input type="number" 
+                                                           class="form-control" 
+                                                           id="maxPrice"
+                                                           name="maxPrice" 
+                                                           placeholder="∞"
+                                                           th:value="${maxPrice}"
+                                                           min="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de Filtro Mejorados -->
+                                    <div class="d-grid gap-3 mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">
+                                            <i class="bi bi-search me-2"></i> Aplicar Filtros
+                                        </button>
+                                        <a href="/products" class="btn btn-outline-secondary btn-lg rounded-pill">
+                                            <i class="bi bi-arrow-clockwise me-2"></i> Limpiar Todo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <!-- Tips de Búsqueda -->
+                        <div class="card border-0 bg-light rounded-4 p-3">
+                            <p class="small text-muted mb-2">
+                                <i class="bi bi-lightbulb text-warning me-1"></i> <strong>Tip:</strong>
+                            </p>
+                            <p class="small text-muted mb-0">
+                                Combina múltiples filtros para encontrar exactamente lo que buscas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Grid de Productos Profesional -->
+                <div class="col-lg-9">
+                    <!-- Mensaje de Productos Vacíos -->
+                    <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+                        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="card-body p-5">
+                                <div class="empty-state-icon mb-4">
+                                    <i class="bi bi-inbox" style="font-size: 6rem; color: #cbd5e1;"></i>
+                                </div>
+                                <h3 class="fw-bold mb-3">No encontramos productos</h3>
+                                <p class="text-muted mb-4">
+                                    No hay productos que coincidan con tus criterios de búsqueda.
+                                    <br>Intenta ajustar los filtros o realiza una nueva búsqueda.
+                                </p>
+                                <a href="/products" class="btn btn-primary btn-lg rounded-pill px-5">
+                                    <i class="bi bi-arrow-left me-2"></i> Ver Todos los Productos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de productos mejorado -->
+                    <div class="row g-4" th:unless="${#lists.isEmpty(products)}">
+                        <div class="col-md-6 col-xl-4" th:each="product : ${products}">
+                            <div class="product-card-pro h-100">
+                                <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                                    <div class="position-relative product-image-container">
+                                        <!-- Imagen del Producto CORREGIDA -->
+                                        <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : 'https://via.placeholder.com/400x300/3498db/ffffff?text=Sin+Imagen'}" 
+                                             th:alt="${product.name}" 
+                                             class="card-img-top product-image" 
+                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/e74c3c/ffffff?text=Error+al+Cargar';">
+                                        
+                                        <!-- Overlay de Stock -->
+                                        <div class="product-overlay">
+                                            <span th:if="${product.cantidad > 0}" class="badge-stock badge-stock-available">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Disponible
+                                            </span>
+                                            <span th:unless="${product.cantidad > 0}" class="badge-stock badge-stock-unavailable">
+                                                <i class="bi bi-x-circle-fill me-1"></i> Agotado
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-body d-flex flex-column p-3">
+                                        <!-- Badges de Categoría y Marca -->
+                                        <div class="d-flex gap-2 mb-2 flex-wrap">
+                                            <span class="badge-custom badge-category" 
+                                                  th:if="${product.category != null}"
+                                                  th:text="${product.category.name}">
+                                                Categoría
+                                            </span>
+                                            <span class="badge-custom badge-brand" 
+                                                  th:if="${product.brand != null}"
+                                                  th:text="${product.brand.name}">
+                                                Marca
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Nombre del Producto -->
+                                        <h5 class="product-title mb-2" th:text="${product.name}">
+                                            Nombre del Producto
+                                        </h5>
+                                        
+                                        <!-- Descripción -->
+                                        <p class="product-description flex-grow-1 mb-3" 
+                                           th:text="${#strings.abbreviate(product.description, 60)}">
+                                            Descripción del producto que puede ser un poco más larga
+                                        </p>
+                                        
+                                        <!-- Precio Profesional CORREGIDO -->
+                                        <div class="product-price-section mb-3">
+                                            <div class="d-flex align-items-baseline gap-2">
+                                                <span class="product-price-main">
+                                                    <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                </span>
+                                                <span class="product-price-currency">COP</span>
+                                            </div>
+                                            <p class="product-price-tax mb-0">IVA incluido</p>
+                                        </div>
+                                        
+                                        <!-- Botones de Acción Profesionales -->
+                                        <div class="product-actions">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <a th:href="@{/products/{id}(id=${product.id})}" 
+                                                    class="btn btn-outline-primary w-100 rounded-pill btn-hover-lift">
+                                                        <i class="bi bi-eye me-1"></i> Ver
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <!-- CORREGIDO: Ahora llama correctamente a ECommerce.addToCart() -->
+                                                    <button class="btn btn-primary w-100 rounded-pill btn-hover-lift" 
+                                                            th:onclick="'ECommerce.addToCart(' + ${product.id} + ', 1)'"
+                                                            th:disabled="${product.cantidad <= 0}">
+                                                        <i class="bi bi-cart-plus me-1"></i> Agregar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* ============================================
+               ESTILOS PROFESIONALES AVANZADOS
+               ============================================ */
+            
+            /* Header con gradiente moderno */
+            .page-header-gradient {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .page-header-gradient::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+                opacity: 0.3;
+            }
+            
+            /* Animación de entrada */
+            .animate-fade-in {
+                animation: fadeInUp 0.6s ease-out;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            /* Sidebar sticky mejorado */
+            .filters-sticky {
+                position: sticky;
+                top: 100px;
+            }
+            
+            /* Tarjeta de producto profesional */
+            .product-card-pro {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            
+            .product-card-pro:hover {
+                transform: translateY(-12px) scale(1.02);
+            }
+            
+            .product-card-pro .card {
+                transition: all 0.3s ease;
+                border: 1px solid rgba(0,0,0,0.05);
+            }
+            
+            .product-card-pro:hover .card {
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+                border-color: rgba(102, 126, 234, 0.2);
+            }
+            
+            /* Contenedor de imagen con efectos */
+            .product-image-container {
+                position: relative;
+                overflow: hidden;
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                height: 200px;
+            }
+            
+            .product-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+            
+            .product-card-pro:hover .product-image {
+                transform: scale(1.1);
+            }
+            
+            /* Overlay de stock moderno */
+            .product-overlay {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                z-index: 10;
+            }
+            
+            .badge-stock {
+                padding: 8px 16px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .badge-stock-available {
+                background: rgba(34, 197, 94, 0.95);
+                color: white;
+            }
+            
+            .badge-stock-unavailable {
+                background: rgba(239, 68, 68, 0.95);
+                color: white;
+            }
+            
+            /* Badges personalizados */
+            .badge-custom {
+                padding: 4px 10px;
+                border-radius: 16px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                text-transform: uppercase;
+            }
+            
+            .badge-category {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+            
+            .badge-brand {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+            }
+            
+            /* Título del producto */
+            .product-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #1e293b;
+                line-height: 1.3;
+                display: -webkit-box;
+                display: box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                box-orient: vertical;
+                overflow: hidden;
+                min-height: 2.6em;
+            }
+            
+            /* Descripción del producto */
+            .product-description {
+                font-size: 0.85rem;
+                color: #64748b;
+                line-height: 1.5;
+                min-height: 2.5em;
+                display: -webkit-box;
+                display: box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            /* Sección de precio profesional MEJORADA */
+            .product-price-section {
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                padding: 10px 12px;
+                border-radius: 10px;
+                border: 2px solid #e2e8f0;
+            }
+            
+            .product-price-main {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: #059669;
+                letter-spacing: -0.5px;
+                line-height: 1;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            
+            .product-price-main::before {
+                content: '$';
+            }
+            
+            /* Botones con efecto lift */
+            .btn-hover-lift {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn-hover-lift::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            
+            .btn-hover-lift:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .btn-hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            }
+            
+            .btn-hover-lift:active {
+                transform: translateY(0);
+            }
+            
+            /* Mejoras en los formularios */
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            }
+            
+            .form-control-lg,
+            .form-select-lg {
+                border-radius: 12px;
+                border: 2px solid #e2e8f0;
+                transition: all 0.3s ease;
+            }
+            
+            .form-control-lg:hover,
+            .form-select-lg:hover {
+                border-color: #cbd5e1;
+            }
+            
+            /* Estado vacío mejorado */
+            .empty-state-icon {
+                animation: float 3s ease-in-out infinite;
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            
+            /* Scrollbar personalizado */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+            
+            ::-webkit-scrollbar-track {
+                background: #f1f5f9;
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 10px;
+            }
+            
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+            
+            /* Responsive mejorado */
+            @media (max-width: 991px) {
+                .filters-sticky {
+                    position: static;
+                }
+                
+                .product-image-container {
+                    height: 240px;
+                }
+                
+                .product-price-main {
+                    font-size: 1.75rem;
+                }
+            }
+            
+            @media (max-width: 575px) {
+                .product-image-container {
+                    height: 200px;
+                }
+                
+                .product-title {
+                    font-size: 1.1rem;
+                }
+                
+                .product-price-main {
+                    font-size: 1.5rem;
+                }
+                
+                .product-actions .col-6 {
+                    width: 100%;
+                }
+            }
+
+            .product-title {
+                font-size: 1.1rem;
+                margin-right: 2px;
+                opacity: 0.8;
+            }
+            
+            .product-price-currency {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #64748b;
+                text-transform: uppercase;
+            }
+            
+            .product-price-tax {
+                font-size: 0.7rem;
+                color: #94a3b8;
+                margin-top: 2px;
+            }
+            
+            /* Botones con efecto lift */
+            .btn-hover-lift {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn-hover-lift::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            
+            .btn-hover-lift:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .btn-hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            }
+            
+            .btn-hover-lift:active {
+                transform: translateY(0);
+            }
+            
+            /* Mejoras en los formularios */
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            }
+            
+            .form-control-lg,
+            .form-select-lg {
+                border-radius: 12px;
+                border: 2px solid #e2e8f0;
+                transition: all 0.3s ease;
+            }
+            
+            .form-control-lg:hover,
+            .form-select-lg:hover {
+                border-color: #cbd5e1;
+            }
+            
+            /* Estado vacío mejorado */
+            .empty-state-icon {
+                animation: float 3s ease-in-out infinite;
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            
+            /* Scrollbar personalizado */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+            
+            ::-webkit-scrollbar-track {
+                background: #f1f5f9;
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 10px;
+            }
+            
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+            
+            /* Responsive mejorado */
+            @media (max-width: 991px) {
+                .filters-sticky {
+                    position: static;
+                }
+                
+                .product-image-container {
+                    height: 240px;
+                }
+                
+                .product-price-main {
+                    font-size: 1.75rem;
+                }
+            }
+            
+            @media (max-width: 575px) {
+                .product-image-container {
+                    height: 200px;
+                }
+                
+                .product-title {
+                    font-size: 1.1rem;
+                }
+                
+                .product-price-main {
+                    font-size: 1.5rem;
+                }
+                
+                .product-actions .col-6 {
+                    width: 100%;
+                }
+            }
+        </style>
+    </div>
+</body>
+</html>

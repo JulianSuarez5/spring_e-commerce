@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Detalle de Pedido')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Pedido</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 fw-bold">
+                        <i class="bi bi-cart-check text-info"></i> Detalle de Pedido
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Pedido #<span th:text="${order.number}">ORD-001</span>
+                    </p>
+                </div>
+                <div>
+                    <a th:href="@{/orders}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver a Mis Pedidos
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Detalles del Pedido -->
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-info-circle"></i> Información del Pedido
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Número de Pedido</p>
+                                    <p class="fw-bold" th:text="${order.number}">ORD-001</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Estado</p>
+                                    <span class="badge" 
+                                          th:classappend="${order.status == 'completed' ? 'bg-success' : (order.status == 'pending' ? 'bg-warning' : 'bg-secondary')}"
+                                          th:text="${order.status}">Estado</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Fecha de Creación</p>
+                                    <p class="fw-bold" th:text="${#temporals.format(order.creationDate, 'dd/MM/yyyy HH:mm')}">
+                                        Fecha
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Total</p>
+                                    <p class="fw-bold text-success" th:text="${#numbers.formatCurrency(order.totalPrice)}">$0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Productos -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-box"></i> Productos
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Precio</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${order.items}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img th:if="${item.product.imageUrl != null}" 
+                                                         th:src="${item.product.imageUrl}"
+                                                         class="rounded me-3"
+                                                         width="50"
+                                                         height="50"
+                                                         alt="Producto">
+                                                    <div>
+                                                        <p class="fw-bold mb-0" th:text="${item.product.name}">Producto</p>
+                                                        <small class="text-muted" th:text="${item.product.brand.name}">Marca</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td th:text="${#numbers.formatCurrency(item.unitPrice)}">$0</td>
+                                            <td th:text="${item.quantity}">1</td>
+                                            <td class="fw-bold" th:text="${#numbers.formatCurrency(item.totalPrice)}">$0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles de Pago -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm sticky-lg-top" style="top: 2rem;">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-credit-card"></i> Detalles de Pago
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <p class="mb-1 text-muted">Método de Pago</p>
+                                <p class="fw-bold">
+                                    <i class="bi bi-paypal text-primary"></i> PayPal
+                                </p>
+                            </div>
+                            <div>
+                                <p class="mb-1 text-muted">ID de Transacción</p>
+                                <p class="fw-bold" th:text="${order.transactionId != null ? order.transactionId : 'N/A'}">
+                                    TRANS-001
+                                </p>
+                            </div>
+
+                            <hr>
+
+                            <div class="alert alert-info mb-0" role="alert">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Si tienes alguna pregunta sobre tu pedido, por favor contáctanos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

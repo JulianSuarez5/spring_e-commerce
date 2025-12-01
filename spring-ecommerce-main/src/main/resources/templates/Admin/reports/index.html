@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Reportes')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard de Reportes</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 fw-bold">
+                    <i class="bi bi-graph-up text-success"></i> Dashboard de Reportes
+                </h1>
+                <p class="text-muted mb-0">Análisis y estadísticas del negocio</p>
+            </div>
+            <div>
+                <div class="btn-group" role="group">
+                    <a th:href="@{/admin/reports/sales}" class="btn btn-outline-primary">
+                        <i class="bi bi-cash-stack"></i> Ventas
+                    </a>
+                    <a th:href="@{/admin/reports/products}" class="btn btn-outline-info">
+                        <i class="bi bi-box"></i> Productos
+                    </a>
+                    <a th:href="@{/admin/reports/customers}" class="btn btn-outline-warning">
+                        <i class="bi bi-people"></i> Clientes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm bg-primary bg-gradient text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 text-white-50">Total Pedidos</p>
+                                <h2 class="mb-0" th:text="${salesSummary.totalOrders}">0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-cart-check fs-1 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm bg-success bg-gradient text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 text-white-50">Ventas Totales</p>
+                                <h2 class="mb-0" th:text="${#numbers.formatCurrency(salesSummary.totalRevenue)}">$0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-cash-stack fs-1 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm bg-info bg-gradient text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 text-white-50">Pedidos Completados</p>
+                                <h2 class="mb-0" th:text="${salesSummary.completedOrders}">0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-check-circle fs-1 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm bg-warning bg-gradient text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 text-white-50">Valor Promedio</p>
+                                <h2 class="mb-0" th:text="${#numbers.formatCurrency(salesSummary.averageOrderValue)}">$0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-graph-up fs-1 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-4 mb-4">
+            <!-- Sales Chart -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Ventas Mensuales</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart" height="80"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Status Chart -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Estado de Pedidos</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products & Top Customers Row -->
+        <div class="row g-4">
+            <!-- Top Products -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-trophy"></i> Productos Más Vendidos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Producto</th>
+                                        <th class="text-end">Cantidad</th>
+                                        <th class="text-end">Ingresos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product, iterStat : ${topProducts}">
+                                        <td th:text="${iterStat.count}">1</td>
+                                        <td th:text="${product.productName}">Producto</td>
+                                        <td class="text-end" th:text="${product.quantitySold}">0</td>
+                                        <td class="text-end fw-bold text-success" 
+                                            th:text="${#numbers.formatCurrency(product.totalRevenue)}">$0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Customers -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-star"></i> Mejores Clientes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Cliente</th>
+                                        <th class="text-end">Pedidos</th>
+                                        <th class="text-end">Total Gastado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="customer, iterStat : ${topCustomers}">
+                                        <td th:text="${iterStat.count}">1</td>
+                                        <td>
+                                            <div th:text="${customer.customerName}">Cliente</div>
+                                            <small class="text-muted" th:text="${customer.email}">email@example.com</small>
+                                        </td>
+                                        <td class="text-end" th:text="${customer.orderCount}">0</td>
+                                        <td class="text-end fw-bold text-primary" 
+                                            th:text="${#numbers.formatCurrency(customer.totalSpent)}">$0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Scripts -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const salesByMonth = /*[[${salesByMonth}]]*/ [];
+            
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: salesByMonth.map(s => s.month),
+                    datasets: [{
+                        label: 'Ventas',
+                        data: salesByMonth.map(s => s.revenue),
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Order Status Chart
+            const statusCtx = document.getElementById('orderStatusChart').getContext('2d');
+            const orderStatus = /*[[${orderStatusCount}]]*/ {};
+            
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendiente', 'Enviado', 'Completado', 'Cancelado'],
+                    datasets: [{
+                        data: [
+                            orderStatus.pending || 0,
+                            orderStatus.shipped || 0,
+                            orderStatus.completed || 0,
+                            orderStatus.cancelled || 0
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Pedidos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Pedido</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Mensajes de éxito/error -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}">Estado actualizado correctamente</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <span th:text="${error}">Error en la operación</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 fw-bold">
+                    <i class="bi bi-cart-check text-info"></i> Detalle de Pedido
+                </h1>
+                <p class="text-muted mb-0">
+                    Pedido #<span th:text="${order.number}">ORD-001</span>
+                </p>
+            </div>
+            <div>
+                <a th:href="@{/admin/orders}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- COLUMNA IZQUIERDA: Información del Pedido y Productos -->
+            <div class="col-lg-8">
+                <!-- Información del Pedido -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Información del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Número de Pedido</p>
+                                <p class="fw-bold" th:text="${order.number}">ORD-001</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Estado</p>
+                                <span class="badge rounded-pill fs-6" 
+                                      th:classappend="
+                                        ${order.status == 'pending'} ? 'text-bg-warning' :
+                                        (${order.status == 'completed'} ? 'text-bg-success' :
+                                        (${order.status == 'shipped'} ? 'text-bg-info' :
+                                        (${order.status == 'cancelled'} ? 'text-bg-danger' : 'text-bg-secondary')))"
+                                      th:text="${order.status}">
+                                    Estado
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Fecha de Creación</p>
+                                <p class="fw-bold" th:text="${#temporals.format(order.creationDate, 'dd/MM/yyyy HH:mm')}">
+                                    Fecha
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Cliente</p>
+                                <p class="fw-bold" th:if="${order.user != null}"
+                                   th:text="${order.user.name != null and !order.user.name.isEmpty() ? order.user.name : order.user.username}">
+                                    Cliente
+                                </p>
+                                <p class="fw-bold text-muted" th:if="${order.user == null}">Sin usuario</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Información de Envío -->
+                <div class="card border-0 shadow-sm mb-4" th:if="${order.shippingAddress != null or order.shippingCity != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-truck"></i> Información de Envío
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12" th:if="${order.shippingAddress != null}">
+                                <p class="mb-1 text-muted">Dirección</p>
+                                <p class="fw-bold" th:text="${order.shippingAddress}">Calle 123 #45-67</p>
+                            </div>
+                            <div class="col-md-4" th:if="${order.shippingCity != null}">
+                                <p class="mb-1 text-muted">Ciudad</p>
+                                <p class="fw-bold" th:text="${order.shippingCity}">Medellín</p>
+                            </div>
+                            <div class="col-md-4" th:if="${order.shippingState != null}">
+                                <p class="mb-1 text-muted">Departamento</p>
+                                <p class="fw-bold" th:text="${order.shippingState}">Antioquia</p>
+                            </div>
+                            <div class="col-md-4" th:if="${order.shippingZipCode != null}">
+                                <p class="mb-1 text-muted">Código Postal</p>
+                                <p class="fw-bold" th:text="${order.shippingZipCode}">050001</p>
+                            </div>
+                            <div class="col-12" th:if="${order.notes != null and !order.notes.isEmpty()}">
+                                <p class="mb-1 text-muted">Notas del Pedido</p>
+                                <p class="fw-bold" th:text="${order.notes}">Notas adicionales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos del Pedido -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box"></i> Productos
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${order.orderDetails}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img th:if="${item.product?.imageUrl != null}" 
+                                                     th:src="${item.product.imageUrl}"
+                                                     class="rounded me-3"
+                                                     width="50" height="50" style="object-fit: cover"
+                                                     alt="Producto">
+                                                <img th:if="${item.product?.imageUrl == null}" 
+                                                     src="https://via.placeholder.com/50x50/6c757d/ffffff?text=IMG"
+                                                     class="rounded me-3"
+                                                     width="50" height="50" style="object-fit: cover"
+                                                     alt="Producto">
+                                                <div>
+                                                    <p class="fw-bold mb-0" th:text="${item.name}">Producto</p>
+                                                    <small class="text-muted" th:text="${item.product?.brand?.name ?: 'Sin Marca'}">Marca</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${#numbers.formatCurrency(item.price)}">$0</td>
+                                        <td th:text="${item.quantity}">1</td>
+                                        <td class="fw-bold" th:text="${#numbers.formatCurrency(item.totalPrice)}">$0</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                                        <td class="fw-bold text-success fs-5" th:text="${#numbers.formatCurrency(order.totalPrice)}">$0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Acciones -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-gear"></i> Acciones
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Formulario para cambiar estado (solo si no está completado o cancelado) -->
+                        <form th:action="@{/admin/orders/status/{id}(id=${order.id})}" 
+                              method="post" 
+                              th:if="${order.status != 'completed' and order.status != 'cancelled'}">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Cambiar Estado</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="pending" th:selected="${order.status == 'pending'}">Pendiente</option>
+                                    <option value="shipped" th:selected="${order.status == 'shipped'}">Enviado</option>
+                                    <option value="completed" th:selected="${order.status == 'completed'}">Completado</option>
+                                    <option value="cancelled" th:selected="${order.status == 'cancelled'}">Cancelado</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check2"></i> Actualizar Estado
+                            </button>
+                        </form>
+
+                        <!-- Mensaje si está completado -->
+                        <div th:if="${order.status == 'completed'}" class="text-center text-success">
+                            <i class="bi bi-check-circle fs-1"></i>
+                            <p class="mt-2 mb-0">Este pedido ha sido completado</p>
+                        </div>
+
+                        <!-- Mensaje si está cancelado -->
+                        <div th:if="${order.status == 'cancelled'}" class="text-center text-danger">
+                            <i class="bi bi-x-circle fs-1"></i>
+                            <p class="mt-2 mb-0">Este pedido ha sido cancelado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información del Usuario -->
+                <div class="card border-0 shadow-sm" th:if="${order.user != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person"></i> Información del Cliente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">
+                            <strong>Nombre:</strong><br>
+                            <span th:text="${order.user.name != null and !order.user.name.isEmpty() ? order.user.name : 'No especificado'}">
+                                Cliente
+                            </span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Usuario:</strong><br>
+                            <span th:text="${order.user.username}">username</span>
+                        </p>
+                        <p class="mb-0" th:if="${order.user.email != null}">
+                            <strong>Email:</strong><br>
+                            <a th:href="'mailto:' + ${order.user.email}" th:text="${order.user.email}">
+                                email@example.com
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

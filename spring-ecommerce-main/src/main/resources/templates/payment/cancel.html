@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Pago Cancelado - E-Commerce Pro')}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Cancelado - E-Commerce Pro</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Cancel Header -->
+        <div class="bg-gradient-warning text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 fw-bold mb-3">
+                            <i class="bi bi-x-circle-fill"></i> Pago Cancelado
+                        </h1>
+                        <p class="lead mb-0">Tu pago ha sido cancelado</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-arrow-clockwise fs-1"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Intenta Nuevamente</div>
+                                <small>Tu carrito está guardado</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Cancel Card -->
+                    <div class="card border-0 shadow-custom">
+                        <div class="card-body text-center p-5">
+                            <div class="mb-4">
+                                <i class="bi bi-x-circle-fill text-warning" style="font-size: 4rem;"></i>
+                            </div>
+                            
+                            <h2 class="fw-bold text-warning mb-3">Pago Cancelado</h2>
+                            <p class="lead text-muted mb-4">
+                                Tu pago ha sido cancelado. No se ha realizado ningún cargo a tu cuenta.
+                            </p>
+
+                            <!-- Information -->
+                            <div class="alert alert-info">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-info-circle"></i> ¿Qué pasó?
+                                </h6>
+                                <ul class="list-unstyled mb-0 text-start">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-info"></i> 
+                                        Tu carrito de compras se ha guardado
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-info"></i> 
+                                        No se ha realizado ningún cargo
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check text-info"></i> 
+                                        Puedes intentar el pago nuevamente
+                                    </li>
+                                    <li class="mb-0">
+                                        <i class="bi bi-check text-info"></i> 
+                                        Tus productos siguen disponibles
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 justify-content-center">
+                                <a href="/payment/checkout" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-credit-card"></i> Intentar Pago Nuevamente
+                                </a>
+                                <a href="/cart" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-cart"></i> Ver Carrito
+                                </a>
+                                <a href="/" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-house"></i> Continuar Comprando
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Section -->
+                    <div class="card border-0 shadow-custom mt-4">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-question-circle"></i> ¿Necesitas Ayuda?
+                            </h6>
+                            <p class="text-muted mb-3">
+                                Si tienes problemas con el pago, contáctanos para recibir asistencia.
+                            </p>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-envelope text-primary me-2"></i>
+                                        <span>soporte@ecommerce-pro.com</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-telephone text-primary me-2"></i>
+                                        <span>+57 1 234 5678</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-whatsapp text-success me-2"></i>
+                                        <span>WhatsApp</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

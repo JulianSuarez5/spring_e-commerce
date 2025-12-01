@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Productos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4"> <div>
+                <h1 class="h2 fw-bold">
+                    <i class="bi bi-box text-primary"></i> Gestión de Productos
+                </h1>
+                 <p class="text-muted mb-0">Administra el catálogo de productos</p> </div>
+            <a href="/admin/products/new" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+            </a>
+        </div>
+
+        <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert"> <i class="bi bi-check-circle me-2"></i>
+            <span th:if="${param.success[0] == 'created'}">Producto creado exitosamente</span>
+            <span th:if="${param.success[0] == 'updated'}">Producto actualizado exitosamente</span>
+            <span th:if="${param.success[0] == 'deleted'}">Producto eliminado exitosamente</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card border-0 shadow-sm"> <div class="card-header"> <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list"></i> Lista de Productos
+                     </h5>
+                    <span class="badge bg-light text-dark rounded-pill" th:text="${#lists.size(products) + ' Productos'}">0</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                     <table class="table table-hover align-middle mb-0"> <thead class="table-light">
+                            <tr>
+                                 <th>Imagen</th> <th>Nombre</th>
+                                <th>Categoría</th>
+                                 <th>Marca</th> <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                 <th class="text-end">Acciones</th> </tr>
+                        </thead>
+                         <tbody> <tr th:each="product : ${products}">
+                                <td>
+                                     <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : '/images/default-product.png'}" 
+                                         th:alt="${product.name}" 
+                                         class="rounded" 
+                                         style="width: 60px; height: 60px; object-fit: cover;"
+                                         onerror="this.src=''">
+                                </td>
+                                 <td>
+                                    <div class="fw-bold" th:text="${product.name}">Nombre</div> <small class="text-muted" th:text="${#strings.abbreviate(product.description, 50)}">Descripción</small>
+                                 </td>
+                                <td>
+                                    <span class="badge text-bg-primary rounded-pill" 
+                                           th:text="${product.category?.name ?: 'Sin categoría'}"> Categoría
+                                    </span>
+                                 </td>
+                                <td>
+                                    <span class="badge text-bg-secondary rounded-pill" 
+                                           th:text="${product.brand?.name ?: 'Sin marca'}"> Marca
+                                    </span>
+                                 </td>
+                                <td>
+                                    <span class="fw-bold text-success" 
+                                           th:text="${#numbers.formatCurrency(product.price)}"> $0.00
+                                     </span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold"
+                                          th:classappend="${product.cantidad > 10 ? 'text-success' : (product.cantidad > 0 ? 'text-warning' : 'text-danger')}" 
+                                          th:text="${product.cantidad}">
+                                        0
+                                     </span>
+                                </td>
+                                <td>
+                                     <span th:if="${product.active}" class="badge text-bg-success rounded-pill">Activo</span> <span th:unless="${product.active}" class="badge text-bg-secondary rounded-pill">Inactivo</span>
+                                 </td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group"> <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" 
+                                           class="btn btn-outline-primary btn-sm"
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                         <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" 
+                                           class="btn btn-outline-danger btn-sm"
+                                           title="Eliminar"
+                                           onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')"> <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                 </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(products)}">
+                                 <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-box fs-1 text-muted mb-3 d-block"></i>
+                                    <p class="text-muted">No hay productos registrados</p>
+                                    <a href="/admin/products/new" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Crear Primer Producto
+                                     </a>
+                                </td>
+                            </tr>
+                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

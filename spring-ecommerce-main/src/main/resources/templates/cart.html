@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Carrito de Compras')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras</title>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Encabezado de la Página -->
+        <div class="bg-gradient-primary text-white py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-5 fw-bold mb-2">
+                            <i class="bi bi-cart3"></i> Mi Carrito de Compras
+                        </h1>
+                        <p class="lead mb-0">Revisa y gestiona tus productos</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="/products" class="btn btn-light btn-lg">
+                            <i class="bi bi-arrow-left"></i> Seguir Comprando
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <!-- Mensaje de Carrito Vacío -->
+            <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-cart-x" style="font-size: 5rem; color: #6c757d;"></i>
+                </div>
+                <h3 class="mb-3">Tu carrito está vacío</h3>
+                <p class="text-muted mb-4">¡Agrega productos para comenzar tu compra!</p>
+                <a href="/products" class="btn btn-primary btn-lg">
+                    <i class="bi bi-shop"></i> Ver Productos
+                </a>
+            </div>
+
+            <!-- Contenido del Carrito -->
+            <div th:unless="${#lists.isEmpty(cartItems)}" class="row">
+                <!-- Items del Carrito -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                            <h5 class="mb-0">
+                                <i class="bi bi-bag"></i> Productos en tu Carrito 
+                                (<span id="totalItems" th:text="${itemCount}">0</span> items)
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <th:block th:each="item : ${cartItems}">
+                                <div class="cart-item-row border-bottom p-4" th:id="'cart-item-' + ${item.id}" th:if="${item.product != null}">
+                                    <div class="row align-items-center g-3">
+                                        <!-- Imagen -->
+                                        <div class="col-md-2 col-sm-3">
+                                            <img th:src="${item.product.imageUrl != null ? item.product.imageUrl : 'https://placehold.co/100x100/6c757d/ffffff?text=Sin+Imagen'}" 
+                                                 th:alt="${item.product.name}" 
+                                                 class="img-fluid rounded shadow-sm" 
+                                                 style="width:100px; height:100px; object-fit:cover;"
+                                                 onerror="this.src='https://placehold.co/100x100/6c757d/ffffff?text=Error'">
+                                        </div>
+                                        
+                                        <!-- Info del Producto -->
+                                        <div class="col-md-3 col-sm-9">
+                                            <h6 class="fw-bold mb-1" th:text="${item.product.name}">Producto</h6>
+                                            <p class="text-muted small mb-1">
+                                                <i class="bi bi-tag-fill me-1"></i>
+                                                <span th:if="${item.product.category}" th:text="${item.product.category.name}">Categoría</span>
+                                            </p>
+                                            <span th:if="${item.product.cantidad > 0}" class="badge bg-success">
+                                                <i class="bi bi-check-circle-fill"></i> En Stock
+                                            </span>
+                                            <span th:unless="${item.product.cantidad > 0}" class="badge bg-danger">
+                                                <i class="bi bi-x-circle-fill"></i> Agotado
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Precio Unitario MEJORADO -->
+                                        <div class="col-md-2 col-6 text-center">
+                                            <small class="text-muted d-block mb-1">Precio Unit.</small>
+                                            <div class="price-display">
+                                                <span class="price-amount" th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                <span class="price-currency">COP</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Cantidad MEJORADA -->
+                                        <div class="col-md-2 col-6">
+                                            <label class="form-label small text-muted d-block text-center mb-2">Cantidad</label>
+                                            <div class="quantity-control">
+                                                <button class="quantity-btn quantity-minus" 
+                                                        type="button" 
+                                                        th:onclick="'updateQuantity(' + ${item.id} + ', ' + ${item.quantity - 1} + ', ' + ${item.product.cantidad} + ')'">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <input type="number" 
+                                                       class="quantity-input" 
+                                                       th:id="'quantity-' + ${item.id}" 
+                                                       th:value="${item.quantity}" 
+                                                       min="1" 
+                                                       th:max="${item.product.cantidad}" 
+                                                       readonly>
+                                                <button class="quantity-btn quantity-plus" 
+                                                        type="button" 
+                                                        th:onclick="'updateQuantity(' + ${item.id} + ', ' + ${item.quantity + 1} + ', ' + ${item.product.cantidad} + ')'">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Subtotal MEJORADO -->
+                                        <div class="col-md-2 col-6 text-center">
+                                            <small class="text-muted d-block mb-1">Subtotal</small>
+                                            <div class="price-display price-total">
+                                                <span class="price-amount" 
+                                                      th:id="'item-total-' + ${item.id}" 
+                                                      th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                                <span class="price-currency">COP</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Eliminar -->
+                                        <div class="col-md-1 col-6 text-end">
+                                            <button class="btn-delete" 
+                                                    type="button"
+                                                    th:data-item-id="${item.id}"
+                                                    onclick="removeItem(this)"
+                                                    title="Eliminar producto">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-between flex-wrap gap-2">
+                                <button class="btn btn-outline-danger" onclick="clearCart()">
+                                    <i class="bi bi-trash"></i> Vaciar Carrito
+                                </button>
+                                <a href="/products" class="btn btn-outline-primary">
+                                    <i class="bi bi-plus-circle"></i> Agregar más productos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen del Pedido - STICKY MEJORADO -->
+                <div class="col-lg-4">
+                    <div class="summary-sticky">
+                        <div class="card border-0 shadow-lg">
+                            <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-receipt"></i> Resumen del Pedido
+                                </h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="summary-row">
+                                    <span class="summary-label">Subtotal (<span id="itemCountSummary" th:text="${itemCount}">0</span> items)</span>
+                                    <span class="summary-value" id="subtotalAmount">
+                                        <span th:text="${#numbers.formatDecimal(cartTotal, 0, 'COMMA', 0, 'POINT')}">0</span> COP
+                                    </span>
+                                </div>
+                                
+                                <th:block th:with="shipping=${cartTotal >= 500000 ? 0 : 50000}, tax=${cartTotal * 0.19}, total=${cartTotal + tax + (cartTotal >= 500000 ? 0 : 50000)}">
+                                    <div class="summary-row">
+                                        <span class="summary-label">Envío</span>
+                                        <span class="summary-value" th:classappend="${shipping == 0 ? 'text-success fw-bold' : ''}">
+                                            <span th:if="${shipping == 0}">¡Gratis!</span>
+                                            <span th:unless="${shipping == 0}" th:text="${#numbers.formatDecimal(shipping, 0, 'COMMA', 0, 'POINT')} + ' COP'">0</span>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="summary-row">
+                                        <span class="summary-label">Impuestos (19%)</span>
+                                        <span class="summary-value" id="taxAmount">
+                                            <span th:text="${#numbers.formatDecimal(tax, 0, 'COMMA', 0, 'POINT')}">0</span> COP
+                                        </span>
+                                    </div>
+                                    
+                                    <hr class="my-3">
+                                    
+                                    <div class="summary-total">
+                                        <span class="total-label">Total a Pagar</span>
+                                        <div class="total-amount" id="totalAmount">
+                                            <span class="amount" th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                            <span class="currency">COP</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center" th:if="${cartTotal < 500000}">
+                                        <i class="bi bi-info-circle-fill me-2"></i>
+                                        <small>
+                                            Agrega <strong th:text="${#numbers.formatDecimal(500000 - cartTotal, 0, 'COMMA', 0, 'POINT')} + ' COP'">0</strong> más para envío gratis
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <a href="/payment/checkout" class="btn btn-success btn-lg btn-checkout">
+                                            <i class="bi bi-credit-card-fill me-2"></i> Proceder al Pago
+                                        </a>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS Personalizado -->
+        <style>
+            /* Sticky del resumen */
+            .summary-sticky {
+                position: sticky;
+                top: 100px;
+            }
+
+            /* Animación de items del carrito */
+            .cart-item-row {
+                transition: all 0.3s ease;
+            }
+
+            .cart-item-row:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Control de cantidad mejorado */
+            .quantity-control {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 4px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .quantity-btn {
+                background: white;
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                color: #667eea;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .quantity-btn:hover {
+                background: #667eea;
+                color: white;
+                transform: scale(1.1);
+            }
+
+            .quantity-btn:active {
+                transform: scale(0.95);
+            }
+
+            .quantity-input {
+                border: none;
+                background: transparent;
+                width: 50px;
+                text-align: center;
+                font-weight: 700;
+                font-size: 16px;
+                color: #1e293b;
+                padding: 0;
+            }
+
+            .quantity-input:focus {
+                outline: none;
+            }
+
+            /* Precios mejorados */
+            .price-display {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+
+            .price-amount {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #1e293b;
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+            .price-amount::before {
+                content: '$';
+                margin-right: 2px;
+            }
+
+            .price-currency {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .price-total .price-amount {
+                font-size: 1.3rem;
+                color: #059669;
+            }
+
+            /* Botón eliminar */
+            .btn-delete {
+                background: #fee2e2;
+                border: 2px solid #fecaca;
+                color: #dc2626;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 18px;
+            }
+
+            .btn-delete:hover {
+                background: #dc2626;
+                color: white;
+                border-color: #dc2626;
+                transform: scale(1.1) rotate(5deg);
+            }
+
+            /* Resumen de pedido */
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 0;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .summary-label {
+                font-size: 0.95rem;
+                color: #64748b;
+            }
+
+            .summary-value {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #1e293b;
+            }
+
+            .summary-total {
+                padding: 16px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .total-label {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #1e293b;
+            }
+
+            .total-amount {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .total-amount .amount {
+                font-size: 1.8rem;
+                font-weight: 800;
+                color: #059669;
+                line-height: 1;
+            }
+
+            .total-amount .amount::before {
+                content: '$';
+            }
+
+            .total-amount .currency {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #64748b;
+                margin-top: 2px;
+            }
+
+            /* Botón de checkout */
+            .btn-checkout {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                border: none;
+                padding: 14px;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+
+            .btn-checkout:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            }
+
+            /* Responsive */
+            @media (max-width: 991px) {
+                .summary-sticky {
+                    position: static;
+                    margin-top: 20px;
+                }
+            }
+
+            @media (max-width: 767px) {
+                .price-amount {
+                    font-size: 0.95rem;
+                }
+
+                .quantity-control {
+                    width: 100%;
+                    max-width: 150px;
+                }
+
+                .total-amount .amount {
+                    font-size: 1.5rem;
+                }
+            }
+        </style>
+
+        <!-- JavaScript Mejorado -->
+        <script th:inline="javascript">
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+            /**
+             * Actualizar cantidad con validación de stock
+             */
+            function updateQuantity(itemId, newQuantity, maxStock) {
+                if (newQuantity < 1) {
+                    removeItem(itemId);
+                    return;
+                }
+
+                // Validar stock máximo
+                if (newQuantity > maxStock) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Stock insuficiente',
+                        text: `Solo hay ${maxStock} unidades disponibles`,
+                        confirmButtonColor: '#667eea',
+                        timer: 2000
+                    });
+                    return;
+                }
+
+                const formData = new URLSearchParams();
+                formData.append('cartItemId', itemId);
+                formData.append('quantity', newQuantity);
+
+                fetch('/cart/update', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded', 
+                        [csrfHeader]: csrfToken 
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cantidad actualizada',
+                            showConfirmButton: false,
+                            timer: 1000,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'No se pudo actualizar la cantidad',
+                            confirmButtonColor: '#667eea'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al actualizar la cantidad',
+                        confirmButtonColor: '#667eea'
+                    });
+                });
+            }
+
+            /**
+             * Eliminar item con confirmación mejorada
+             */
+            function removeItem(itemId) {
+                const itemId = button.getAttribute('data-item-id');
+                Swal.fire({
+                    title: '¿Eliminar producto?',
+                    text: "Este producto será removido de tu carrito",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const formData = new URLSearchParams();
+                        formData.append('cartItemId', itemId);
+
+                        fetch('/cart/remove', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/x-www-form-urlencoded', 
+                                [csrfHeader]: csrfToken 
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Producto eliminado',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'No se pudo eliminar el producto',
+                                    confirmButtonColor: '#667eea'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error al eliminar el producto',
+                                confirmButtonColor: '#667eea'
+                            });
+                        });
+                    }
+                });
+            }
+
+            /**
+             * Vaciar carrito
+             */
+            function clearCart() {
+                Swal.fire({
+                    title: '¿Vaciar carrito?',
+                    text: "Se eliminarán todos los productos de tu carrito",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, vaciar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('/cart/clear', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/x-www-form-urlencoded', 
+                                [csrfHeader]: csrfToken 
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Carrito vaciado',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'No se pudo vaciar el carrito',
+                                    confirmButtonColor: '#667eea'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error al vaciar el carrito',
+                                confirmButtonColor: '#667eea'
+                            });
+                        });
+                    }
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>

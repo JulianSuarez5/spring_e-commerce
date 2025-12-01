@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Dashboard')}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+</head>
+<body>
+    <div th:fragment="content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 fw-bold mb-1">
+                     <i class="bi bi-speedometer2 text-primary"></i> Dashboard
+                </h1>
+                <p class="text-muted mb-0">Resumen general de tu tienda</p>
+            </div>
+            <div>
+                <span class="badge text-bg-success fs-6 rounded-pill shadow-sm">
+                     <i class="bi bi-check-circle-fill"></i> Sistema Activo
+                </span>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #e9f7ef, #ffffff);">
+                <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-success text-white rounded-circle p-3 me-3 shadow-sm">
+                            <i class="bi bi-cash-stack fs-3"></i>
+                        </div>
+                        <div>
+                            <p class="text-muted mb-1 fw-semibold small">Ventas Totales (Completadas / Enviadas)</p>
+                            <h3 class="fw-bold mb-0 text-success">
+                                <i class="bi bi-currency-dollar"></i>
+                                <span th:text="${#numbers.formatDecimal(totalSales, 0, 'COMMA', 2, 'POINT')}">0</span>
+                            </h3>
+                            <small class="text-muted">COP</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info-subtle text-info rounded-circle p-3 me-3">
+                                <i class="bi bi-cart-check fs-3"></i>
+                            </div>
+                            <div>
+                                 <p class="text-muted mb-0 small">Pedidos Totales</p>
+                                 <h3 class="fw-bold mb-0" th:text="${totalOrders}">0</h3>
+                            </div>
+                   </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                 <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-primary-subtle text-primary rounded-circle p-3 me-3">
+                            <i class="bi bi-box fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0" th:text="${totalProducts}">0</h4>
+                             <p class="text-muted mb-0 small">Productos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                 <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-warning-subtle text-warning rounded-circle p-3 me-3">
+                            <i class="bi bi-tags fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0" th:text="${totalCategories}">0</h4>
+                             <p class="text-muted mb-0 small">Categorías</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12"> 
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 d-flex align-items-center">
+                        <div class="bg-danger-subtle text-danger rounded-circle p-3 me-3">
+                            <i class="bi bi-award fs-4"></i>
+                         </div>
+                        <div>
+                            <h4 class="fw-bold mb-0" th:text="${totalBrands}">0</h4>
+                            <p class="text-muted mb-0 small">Marcas</p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                 <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header">
+                        <i class="bi bi-lightning-fill me-2"></i> Acciones Rápidas
+                    </div>
+                     <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a th:href="@{/admin/products/new}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
+                            </a>
+                            <a th:href="@{/admin/orders}" class="btn btn-outline-info">
+                                <i class="bi bi-cart-check me-2"></i> Gestionar Pedidos
+                             </a>
+                            <a th:href="@{/admin/categories/new}" class="btn btn-outline-secondary">
+                                <i class="bi bi-plus-lg me-2"></i> Nueva Categoría
+                             </a>
+                             <a th:href="@{/admin/brands/new}" class="btn btn-outline-secondary">
+                                <i class="bi bi-plus-lg me-2"></i> Nueva Marca
+                             </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history me-2"></i> Pedidos Recientes
+                     </div>
+                    
+                    <div th:if="${#lists.isEmpty(recentOrders)}" class="card-body text-center p-5">
+                        <i class="bi bi-info-circle fs-1 text-muted mb-3"></i>
+                         <p class="text-muted">No hay pedidos recientes para mostrar.</p>
+                    </div>
+                    
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(recentOrders)}">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-3">ID Pedido</th>
+                                    <th scope="col">Cliente</th>
+                                    <th scope="col">Total</th>
+                                     <th scope="col">Estado</th>
+                                    <th scope="col" class="pe-3">Fecha</th>
+                                </tr>
+                             </thead>
+                            <tbody>
+                                <tr th:each="order : ${recentOrders}" style="cursor: pointer;" th:onclick="|window.location.href='@{/admin/orders}'|">
+                                    <td class="fw-bold ps-3" th:text="${order.number}">ORD-123</td>
+                                    <td>
+                                    <span th:if="${order.user != null}" 
+                                            th:text="${order.user.name != null and !order.user.name.isEmpty() ? order.user.name : order.user.username}">
+                                        Cliente
+                                    </span>
+                                    <span th:if="${order.user == null}" class="text-muted">Sin usuario</span>
+                                    </td>
+
+                                     <td th:text="${#numbers.formatCurrency(order.totalPrice)}">$0.00</td>
+                                    <td>
+                                        <span th:switch="${order.status}" 
+                                                class="badge rounded-pill"
+                                              th:classappend="
+                                                ${order.status == 'pending'} ? 'text-bg-warning' :
+                                                (${order.status == 'completed'} ? 'text-bg-success' :
+                                                (${order.status == 'shipped'} ? 'text-bg-info' :
+                                                (${order.status == 'cancelled'} ? 'text-bg-danger' : 'text-bg-secondary')))">
+                                             <span th:text="${order.status}"></span>
+                                        </span>
+                                     </td>
+                                    <td class="text-muted small pe-3" th:text="${#temporals.format(order.creationDate, 'dd-MMM-yyyy HH:mm')}"></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center bg-light-subtle" th:if="${!#lists.isEmpty(recentOrders)}">
+                         <a th:href="@{/admin/orders}" class="btn btn-outline-primary btn-sm">
+                            Ver todos los pedidos <i class="bi bi-arrow-right-short"></i>
+                        </a>
+                    </div>
+                 </div>
+            </div>
+        </div> 
+    </div> 
+</body>
+</html>

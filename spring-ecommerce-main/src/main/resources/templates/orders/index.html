@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Mis Pedidos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Pedidos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 fw-bold">
+                        <i class="bi bi-cart-check text-info"></i> Mis Pedidos
+                    </h1>
+                    <p class="text-muted mb-0">Historial de tus compras</p>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list"></i> Historial de Pedidos
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order : ${orders}">
+                                    <td><strong th:text="${order.number}">ORD-001</strong></td>
+                                    <td th:text="${#temporals.format(order.creationDate, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                                    <td class="fw-bold text-success" th:text="${#numbers.formatCurrency(order.totalPrice)}">$0</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${order.status == 'completed' ? 'bg-success' : (order.status == 'pending' ? 'bg-warning' : 'bg-secondary')}"
+                                              th:text="${order.status}">Estado</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/orders/{id}(id=${order.id})}" 
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(orders)}">
+                                    <td colspan="5" class="text-center py-5">
+                                        <i class="bi bi-cart-x text-muted fs-1 mb-3 d-block"></i>
+                                        <p class="text-muted mb-3">No tienes pedidos realizados</p>
+                                        <a th:href="@{/products}" class="btn btn-primary">
+                                            <i class="bi bi-shop"></i> Ir a la Tienda
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

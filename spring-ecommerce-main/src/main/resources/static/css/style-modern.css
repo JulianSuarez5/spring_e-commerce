@@ -1,0 +1,1491 @@
+/* ============================================
+   E-COMMERCE MODERN CSS - Diseño Profesional
+   Estilo: Apple/Stripe/Minimalista Moderno
+   ============================================ */
+
+/* ========== VARIABLES CSS ========== */
+:root {
+    /* Colores principales */
+    --primary-color: #007AFF;
+    --primary-dark: #0051D5;
+    --primary-light: #5AC8FA;
+    --secondary-color: #5856D6;
+    --accent-color: #FF3B30;
+    --success-color: #34C759;
+    --warning-color: #FF9500;
+    --info-color: #5AC8FA;
+    
+    /* Gradientes modernos */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --gradient-light: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    
+    /* Sombras profesionales */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
+    
+    /* Bordes */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Transiciones */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-blur: blur(20px);
+}
+
+/* ========== ANIMACIONES KEYFRAMES ========== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotate3d {
+    0% {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    100% {
+        transform: perspective(1000px) rotateY(360deg);
+    }
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ========== UTILIDADES DE ANIMACIÓN ========== */
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.5s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* ========== NAVBAR MODERNO ========== */
+.navbar {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar-dark {
+    background: rgba(33, 37, 41, 0.95) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all var(--transition-normal);
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.nav-link {
+    position: relative;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--radius-sm);
+    margin: 0 0.25rem;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    transition: all var(--transition-normal);
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::before,
+.nav-link.active::before {
+    width: 80%;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+    color: var(--primary-color) !important;
+}
+
+.navbar-dark .nav-link:hover {
+    color: var(--primary-light) !important;
+}
+
+/* Badge del carrito mejorado */
+.cart-badge {
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    transition: all var(--transition-fast);
+}
+
+.cart-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.6);
+}
+
+/* ========== BOTONES MODERNOS ========== */
+.btn {
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+    background: var(--gradient-success);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+/* ========== CARDS MODERNAS ========== */
+.card {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    overflow: hidden;
+    background: white;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transition: transform var(--transition-normal);
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-header {
+    background: var(--gradient-light);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    padding: 1.25rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Product Cards Especiales */
+.product-card {
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    perspective: 1000px;
+}
+
+.product-card:hover {
+    transform: translateY(-12px) rotateX(2deg);
+    box-shadow: var(--shadow-xl);
+}
+
+.product-card .card-img-top {
+    transition: transform var(--transition-slow);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.product-card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+.product-card .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+/* Badge de stock mejorado */
+.badge {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.badge:hover {
+    transform: scale(1.1);
+}
+
+.badge.bg-success {
+    background: var(--gradient-success) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%) !important;
+}
+
+.badge.bg-primary {
+    background: var(--gradient-primary) !important;
+}
+
+/* ========== FORMULARIOS MODERNOS (GLASSMORPHISM) ========== */
+.form-control,
+.form-select {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    transition: all var(--transition-normal);
+    background: white;
+    font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Login/Register Cards con Glassmorphism */
+.login-card,
+.register-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    animation: fadeInUp 0.8s ease-out;
+    overflow: hidden;
+}
+
+.login-card::before,
+.register-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--gradient-primary);
+}
+
+.card-header {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* ========== HERO SECTION ========== */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-primary);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== SECCIÓN DE TECNOLOGÍAS ========== */
+.tech-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.tech-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    border-radius: 50%;
+}
+
+.tech-card:hover::before {
+    opacity: 0.1;
+}
+
+.tech-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: var(--shadow-xl);
+}
+
+.tech-card i,
+.tech-card img {
+    transition: transform var(--transition-normal);
+    position: relative;
+    z-index: 1;
+}
+
+.tech-card:hover i,
+.tech-card:hover img {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* ========== FILTROS SIDEBAR ========== */
+.filter-sidebar {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 100px;
+}
+
+.list-group-item {
+    border: none;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+    transition: all var(--transition-fast);
+    padding: 0.75rem 1rem;
+}
+
+.list-group-item:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateX(5px);
+    box-shadow: var(--shadow-sm);
+}
+
+.list-group-item.active {
+    background: var(--gradient-primary);
+    color: white;
+    font-weight: 600;
+}
+
+/* ========== TABLAS MODERNAS ========== */
+.table {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.table thead {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.table thead th {
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    transition: all var(--transition-fast);
+}
+
+.table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.05);
+    transform: scale(1.01);
+    box-shadow: var(--shadow-sm);
+}
+
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* ========== FOOTER MODERNO ========== */
+.footer {
+    background: var(--gradient-dark);
+    color: white;
+    padding: 4rem 0 2rem;
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-light);
+    transition: width var(--transition-normal);
+}
+
+.footer a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.footer a:hover::after {
+    width: 100%;
+}
+
+/* ========== PANEL DE ADMINISTRACIÓN ========== */
+.admin-sidebar {
+    background: var(--gradient-dark);
+    box-shadow: var(--shadow-xl);
+    transition: all var(--transition-normal);
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-md);
+    margin: 0.25rem 0.5rem;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-sidebar .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--gradient-primary);
+    transform: scaleY(0);
+    transition: transform var(--transition-normal);
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(5px);
+}
+
+.admin-sidebar .nav-link.active::before {
+    transform: scaleY(1);
+}
+
+.admin-navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.admin-content .card {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.admin-content .card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* ========== ALERTAS MODERNAS ========== */
+.alert {
+    border: none;
+    border-radius: var(--radius-md);
+    border-left: 4px solid;
+    box-shadow: var(--shadow-sm);
+    animation: slideInRight 0.5s ease-out;
+    padding: 1rem 1.5rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.1) 0%, rgba(52, 199, 89, 0.05) 100%);
+    border-left-color: var(--success-color);
+    color: #1e7e34;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.1) 0%, rgba(255, 59, 48, 0.05) 100%);
+    border-left-color: var(--accent-color);
+    color: #c82333;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 149, 0, 0.05) 100%);
+    border-left-color: var(--warning-color);
+    color: #856404;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(90, 200, 250, 0.1) 0%, rgba(90, 200, 250, 0.05) 100%);
+    border-left-color: var(--info-color);
+    color: #004085;
+}
+
+/* ========== INPUT GROUP MODERNO ========== */
+.input-group {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.input-group .btn {
+    border-radius: 0;
+}
+
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .form-control:focus {
+    border-right: 2px solid var(--primary-color);
+}
+
+/* ========== DROPDOWN MODERNO ========== */
+.dropdown-menu {
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    animation: fadeInDown 0.3s ease-out;
+}
+
+.dropdown-item {
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    transition: all var(--transition-fast);
+    margin-bottom: 0.25rem;
+}
+
+.dropdown-item:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateX(5px);
+}
+
+.dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+/* ========== SCROLLBAR PERSONALIZADO ========== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    transition: background var(--transition-normal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* ========== EFECTOS 3D ========== */
+.card-3d {
+    transform-style: preserve-3d;
+    transition: transform var(--transition-normal);
+}
+
+.card-3d:hover {
+    transform: perspective(1000px) rotateY(5deg) rotateX(5deg);
+}
+
+/* ========== LOADING STATES ========== */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+    }
+    
+    .btn-lg {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .hero-section {
+        min-height: 80vh;
+    }
+}
+
+/* ========== UTILIDADES ADICIONALES ========== */
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bg-gradient-primary {
+    background: var(--gradient-primary);
+}
+
+.bg-gradient-secondary {
+    background: var(--gradient-secondary);
+}
+
+.bg-gradient-success {
+    background: var(--gradient-success);
+}
+
+.shadow-glow {
+    box-shadow: var(--shadow-glow);
+}
+
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+}
+
+/* ========== MICRO-INTERACCIONES ========== */
+.hover-lift {
+    transition: transform var(--transition-normal);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.hover-scale {
+    transition: transform var(--transition-normal);
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-rotate {
+    transition: transform var(--transition-normal);
+}
+
+.hover-rotate:hover {
+    transform: rotate(5deg);
+}
+
+/* ========== PÁGINA PRINCIPAL ESPECÍFICA ========== */
+.bg-gradient-primary {
+    background: var(--gradient-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-gradient-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="dots" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23dots)"/></svg>');
+    opacity: 0.5;
+}
+
+/* ========== MEJORAS DE ACCESIBILIDAD ========== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========== FOCUS VISIBLE ========== */
+*:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   ELEMENTOS 3D INTERACTIVOS - E-COMMERCE
+   Técnica: CSS 3D Transforms + Pseudo-elementos
+   ============================================ */
+
+/* ========== CONTENEDOR 3D HERO ========== */
+.hero-3d-area {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 20s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+    perspective-origin: center center;
+}
+
+/* Fondo glassmorphism */
+.hero-3d-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    z-index: 1;
+}
+
+/* Patrón de puntos sutiles */
+.hero-3d-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.15) 1px, transparent 0);
+    background-size: 40px 40px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ========== OBJETOS 3D BASE ========== */
+.object-3d {
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+    z-index: 10;
+    will-change: transform;
+}
+
+/* ========== CARRITO DE COMPRAS 3D ========== */
+/* Técnica: Pseudo-elementos con transformaciones 3D */
+.object-3d.cart-3d {
+    width: 120px;
+    height: 120px;
+    top: 20%;
+    left: 10%;
+    transform-style: preserve-3d;
+}
+
+.cart-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    border-radius: 12px 12px 0 0;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.5);
+    transform: translateZ(20px);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.cart-3d::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+    height: 30%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateZ(10px) rotateX(-10deg);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Ruedas del carrito */
+.cart-3d .wheel {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border-radius: 50%;
+    bottom: -5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    animation: rotate-wheel 3s linear infinite;
+}
+
+.cart-3d .wheel.left {
+    left: 15%;
+}
+
+.cart-3d .wheel.right {
+    right: 15%;
+}
+
+@keyframes rotate-wheel {
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(360deg); }
+}
+
+/* ========== SMARTPHONE 3D ========== */
+/* Técnica: Múltiples capas con translateZ para profundidad */
+.object-3d.phone-3d {
+    width: 80px;
+    height: 140px;
+    top: 30%;
+    right: 15%;
+    transform-style: preserve-3d;
+}
+
+.phone-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 20px;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+    transform: translateZ(0);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.phone-3d::after {
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 8%;
+    width: 84%;
+    height: 70%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(102, 126, 234, 0.5);
+    transform: translateZ(5px);
+}
+
+/* Botón home del teléfono */
+.phone-3d .home-button {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%) translateZ(3px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== LAPTOP 3D ========== */
+/* Técnica: Transformaciones 3D con rotateX para efecto de apertura */
+.object-3d.laptop-3d {
+    width: 200px;
+    height: 120px;
+    bottom: 25%;
+    left: 20%;
+    transform-style: preserve-3d;
+}
+
+.laptop-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 8px 8px 0 0;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+    transform: translateZ(0) rotateX(5deg);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.laptop-3d::after {
+    content: '';
+    position: absolute;
+    top: 70%;
+    left: 5%;
+    width: 90%;
+    height: 8%;
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateZ(-5px) rotateX(-5deg);
+}
+
+/* Pantalla del laptop */
+.laptop-3d .screen {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 60%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(102, 126, 234, 0.4);
+    transform: translateZ(2px);
+}
+
+/* ========== TV 3D ========== */
+.object-3d.tv-3d {
+    width: 180px;
+    height: 120px;
+    top: 15%;
+    left: 50%;
+    transform-style: preserve-3d;
+}
+
+.tv-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 8px;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+    transform: translateZ(0);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.tv-3d::after {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 70%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(102, 126, 234, 0.6);
+    transform: translateZ(5px);
+}
+
+/* Base del TV */
+.tv-3d .stand {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateZ(-10px);
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== BOLSA DE COMPRAS 3D ========== */
+.object-3d.bag-3d {
+    width: 100px;
+    height: 140px;
+    bottom: 20%;
+    right: 20%;
+    transform-style: preserve-3d;
+}
+
+.bag-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+    border-radius: 8px 8px 20px 20px;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+    transform: translateZ(0);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.bag-3d::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    width: 60%;
+    height: 15%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transform: translateZ(5px);
+    backdrop-filter: blur(5px);
+}
+
+/* Asas de la bolsa */
+.bag-3d .handle {
+    position: absolute;
+    top: -8px;
+    width: 30px;
+    height: 20px;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bag-3d .handle.left {
+    left: 15%;
+}
+
+.bag-3d .handle.right {
+    right: 15%;
+}
+
+/* ========== ÍCONO DE TECNOLOGÍA 3D ========== */
+.object-3d.tech-icon-3d {
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    right: 10%;
+    transform-style: preserve-3d;
+}
+
+.tech-icon-3d::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 20px;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+    transform: translateZ(0) rotateZ(45deg);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.tech-icon-3d::after {
+    content: '⚡';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(10px) rotateZ(-45deg);
+    font-size: 3rem;
+    filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.8));
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ========== ANIMACIONES FLOTANTES ========== */
+@keyframes float-3d {
+    0%, 100% {
+        transform: translateY(0px) translateZ(0) rotateY(0deg);
+    }
+    25% {
+        transform: translateY(-15px) translateZ(5px) rotateY(5deg);
+    }
+    50% {
+        transform: translateY(-20px) translateZ(10px) rotateY(0deg);
+    }
+    75% {
+        transform: translateY(-15px) translateZ(5px) rotateY(-5deg);
+    }
+}
+
+.object-3d {
+    animation: float-3d 6s ease-in-out infinite;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+}
+
+.object-3d.cart-3d {
+    animation-delay: 0s;
+}
+
+.object-3d.phone-3d {
+    animation-delay: 0.5s;
+}
+
+.object-3d.laptop-3d {
+    animation-delay: 1s;
+}
+
+.object-3d.tv-3d {
+    animation-delay: 1.5s;
+}
+
+.object-3d.bag-3d {
+    animation-delay: 2s;
+}
+
+.object-3d.tech-icon-3d {
+    animation-delay: 2.5s;
+}
+
+/* ========== EFECTOS DE LUZ Y SOMBRA 3D ========== */
+.object-3d::before {
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+/* Resplandor sutil en hover */
+.object-3d:hover {
+    filter: drop-shadow(0 15px 50px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 30px rgba(102, 126, 234, 0.5));
+    transform: scale(1.1) !important;
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.object-3d:hover::before {
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(102, 126, 234, 0.5),
+        inset 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* ========== RESPONSIVE 3D ========== */
+@media (max-width: 768px) {
+    .object-3d {
+        transform: scale(0.7);
+    }
+    
+    .object-3d.cart-3d {
+        top: 10%;
+        left: 5%;
+    }
+    
+    .object-3d.phone-3d {
+        top: 20%;
+        right: 5%;
+    }
+    
+    .object-3d.laptop-3d {
+        bottom: 15%;
+        left: 10%;
+        transform: scale(0.6);
+    }
+    
+    .object-3d.tv-3d {
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%) scale(0.7);
+    }
+    
+    .object-3d.bag-3d {
+        bottom: 10%;
+        right: 5%;
+    }
+    
+    .object-3d.tech-icon-3d {
+        top: 40%;
+        right: 5%;
+    }
+}
+
+/* ========== MEJORAS DE RENDIMIENTO ========== */
+.object-3d {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Desactivar animaciones en dispositivos con preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    .object-3d {
+        animation: none;
+    }
+    
+    .cart-3d .wheel {
+        animation: none;
+    }
+}
+

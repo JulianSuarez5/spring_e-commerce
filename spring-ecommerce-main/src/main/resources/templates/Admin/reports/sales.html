@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es" 
+      xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{Admin/admin_layout :: layout(~{::content}, 'Reportes')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 fw-bold">
+                    <i class="bi bi-cash-stack text-success"></i> Reporte de Ventas
+                </h1>
+                <p class="text-muted mb-0">Análisis detallado de ventas por periodo</p>
+            </div>
+            <div>
+                <a th:href="@{/admin/reports}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver al Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <form th:action="@{/admin/reports/sales}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">Fecha Inicio</label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="startDate" 
+                               name="startDate" 
+                               th:value="${startDate}"
+                               required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">Fecha Fin</label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="endDate" 
+                               name="endDate" 
+                               th:value="${endDate}"
+                               required>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter"></i> Filtrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-primary bg-gradient text-white">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Total Pedidos</h6>
+                        <h3 class="mb-0" th:text="${salesReport.totalOrders}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-success bg-gradient text-white">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Pedidos Completados</h6>
+                        <h3 class="mb-0" th:text="${salesReport.completedOrders}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-info bg-gradient text-white">
+                    <div class="card-body">
+                        <h6 class="text-white-50">Ingresos Totales</h6>
+                        <h3 class="mb-0" th:text="${#numbers.formatCurrency(salesReport.totalRevenue)}">$0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Exportación -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-list-ul"></i> Detalle de Pedidos</h5>
+                    <div class="btn-group">
+                        <a th:href="@{/admin/reports/export/sales/pdf(startDate=${startDate},endDate=${endDate})}" 
+                           class="btn btn-sm btn-danger">
+                            <i class="bi bi-file-pdf"></i> Exportar PDF
+                        </a>
+                        <a th:href="@{/admin/reports/export/sales/excel(startDate=${startDate},endDate=${endDate})}" 
+                           class="btn btn-sm btn-success">
+                            <i class="bi bi-file-excel"></i> Exportar Excel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Número</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Dirección</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${salesReport.orders}">
+                                <td>
+                                    <strong th:text="${order.number}">ORD-001</strong>
+                                </td>
+                                <td>
+                                    <span th:if="${order.user != null}"
+                                          th:text="${order.user.name != null ? order.user.name : order.user.username}">
+                                        Cliente
+                                    </span>
+                                    <span th:if="${order.user == null}" class="text-muted">N/A</span>
+                                </td>
+                                <td class="text-muted" 
+                                    th:text="${#temporals.format(order.creationDate, 'dd/MM/yyyy HH:mm')}">
+                                    Fecha
+                                </td>
+                                <td class="fw-bold" th:text="${#numbers.formatCurrency(order.totalPrice)}">$0</td>
+                                <td>
+                                    <span class="badge rounded-pill" 
+                                          th:classappend="
+                                            ${order.status == 'pending'} ? 'text-bg-warning' :
+                                            (${order.status == 'completed'} ? 'text-bg-success' :
+                                            (${order.status == 'shipped'} ? 'text-bg-info' :
+                                            (${order.status == 'cancelled'} ? 'text-bg-danger' : 'text-bg-secondary')))"
+                                          th:text="${order.status}">
+                                        Estado
+                                    </span>
+                                </td>
+                                <td>
+                                    <small th:text="${order.shippingCity != null ? order.shippingCity : 'N/A'}">
+                                        Ciudad
+                                    </small>
+                                </td>
+                                <td class="text-end">
+                                    <a th:href="@{/admin/orders/show/{id}(id=${order.id})}" 
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(salesReport.orders)}">
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                                    <p class="text-muted">No hay pedidos en este periodo</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

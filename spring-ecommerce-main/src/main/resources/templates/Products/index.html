@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content}, 'Nuestros Productos')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestros Productos</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="bg-gradient-primary text-white py-5 animate-fade-in-down">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-5 fw-bold mb-2">
+                            <i class="bi bi-shop"></i> Nuestros Productos
+                        </h1>
+                        <p class="lead mb-0">Descubre nuestra amplia gama de productos de calidad</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <span class="badge bg-light text-dark fs-6 animate-pulse">
+                            <span th:text="${#lists.size(products)}">0</span> productos disponibles
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container py-5">
+            <div class="row">
+                <!-- Sidebar de Filtros -->
+                <div class="col-lg-3">
+                    <div class="filter-sidebar card mb-4 animate-fade-in-left">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-3 text-gradient">
+                                <i class="bi bi-funnel"></i> Filtros
+                            </h5>
+                            
+                            <!-- Búsqueda -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Buscar</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       placeholder="Buscar productos..."
+                                       id="searchInput">
+                            </div>
+                            
+                            <!-- Categorías -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Categorías</label>
+                                <div class="list-group list-group-flush">
+                                    <a href="/products" 
+                                       class="list-group-item list-group-item-action">
+                                        Todas
+                                    </a>
+                                    <th:block th:each="category : ${categories}">
+                                        <a th:href="@{/products(category=${category.id})}" 
+                                           class="list-group-item list-group-item-action"
+                                           th:text="${category.name}">
+                                            Categoría
+                                        </a>
+                                    </th:block>
+                                </div>
+                            </div>
+                            
+                            <!-- Marcas -->
+                            <div class="mb-3" th:if="${brands != null && !#lists.isEmpty(brands)}">
+                                <label class="form-label fw-bold">Marcas</label>
+                                <div class="list-group list-group-flush">
+                                    <th:block th:each="brand : ${brands}">
+                                        <a th:href="@{/products(brand=${brand.id})}" 
+                                           class="list-group-item list-group-item-action"
+                                           th:text="${brand.name}">
+                                            Marca
+                                        </a>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Productos -->
+                <div class="col-lg-9">
+                    <!-- Productos vacíos -->
+                    <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+                        <i class="bi bi-box-seam" style="font-size: 5rem; color: #6c757d;"></i>
+                        <h3 class="mt-3">No hay productos disponibles</h3>
+                        <p class="text-muted">Vuelve pronto para ver nuestras nuevas ofertas</p>
+                    </div>
+
+                    <!-- Grid de productos -->
+                    <div class="row g-4" th:unless="${#lists.isEmpty(products)}">
+                        <div class="col-md-6 col-lg-4" th:each="product, iterStat : ${products}">
+                            <div class="card product-card h-100 animate-fade-in-up" th:style="'animation-delay: ' + ${iterStat.index * 0.1} + 's;'">
+                                <div class="position-relative">
+                                    <img th:src="${product.imageUrl != null && !#strings.isEmpty(product.imageUrl) ? product.imageUrl : 'https://via.placeholder.com/300x200/3498db/ffffff?text=Producto'}" 
+                                         th:alt="${product.name}" 
+                                         class="card-img-top" 
+                                         style="height: 200px; object-fit: cover;"
+                                         onerror="this.src='https://via.placeholder.com/300x200/3498db/ffffff?text=Producto'">
+                                    
+                                    <!-- Badge de stock -->
+                                    <div class="position-absolute top-0 end-0 p-2">
+                                        <span th:if="${product.cantidad > 0}" class="badge bg-success">En Stock</span>
+                                        <span th:unless="${product.cantidad > 0}" class="badge bg-danger">Agotado</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Categoría y Marca -->
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary" 
+                                              th:if="${product.category != null}"
+                                              th:text="${product.category.name}">
+                                            Categoría
+                                        </span>
+                                        <span class="badge bg-secondary" 
+                                              th:if="${product.brand != null}"
+                                              th:text="${product.brand.name}">
+                                            Marca
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Nombre -->
+                                    <h5 class="card-title fw-bold" th:text="${product.name}">Nombre del Producto</h5>
+                                    
+                                    <!-- Descripción -->
+                                    <p class="card-text text-muted small flex-grow-1" 
+                                       th:text="${#strings.abbreviate(product.description, 80)}">
+                                        Descripción del producto
+                                    </p>
+                                    
+                                    <!-- Precio -->
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <span class="fs-4 fw-bold text-success" 
+                                              th:text="${#numbers.formatCurrency(product.price)}">
+                                            $0.00
+                                        </span>
+                                        <small class="text-muted" th:if="${product.cantidad > 0}">
+                                            Stock: <span th:text="${product.cantidad}">0</span>
+                                        </small>
+                                    </div>
+                                    
+                                    <!-- Botones -->
+                                    <div class="d-flex gap-2">
+                                        <a th:href="@{/products/{id}(id=${product.id})}" 
+                                           class="btn btn-outline-primary flex-grow-1">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                        <button class="btn btn-primary flex-grow-1" 
+                                                th:onclick="'ECommerce.addToCart(' + ${product.id} + ', 1)'"
+                                                th:disabled="${product.cantidad <= 0}">
+                                            <i class="bi bi-cart-plus"></i> Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
